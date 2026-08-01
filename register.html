@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block title %}Register | SkyBook{% endblock %}
+{% block content %}
+<div class="auth-wrap py-5">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-lg-9">
+        <div class="auth-card row g-0">
+          <div class="col-md-5 auth-side d-none d-md-flex">
+            <i class="fa-solid fa-plane-departure fa-2x mb-3 gold-text"></i>
+            <h3 class="fw-bold">Join SkyBook</h3>
+            <p class="text-white-50">Create your account to search flights, manage bookings and download boarding passes anytime.</p>
+          </div>
+          <div class="col-md-7 p-4 p-md-5">
+            <h4 class="fw-bold mb-4">Create your account</h4>
+            <form method="POST" class="needs-validation" novalidate>
+              <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+              <div class="mb-3">
+                <label class="form-label">Full Name</label>
+                <input type="text" name="fullname" class="form-control" value="{{ form.fullname or '' }}" required>
+              </div>
+              <div class="mb-3">
+                <label class="form-label">Username</label>
+                <input type="text" name="username" class="form-control" value="{{ form.username or '' }}" required>
+              </div>
+              <div class="mb-3">
+                <label class="form-label">Email ID</label>
+                <input type="email" name="email" class="form-control" value="{{ form.email or '' }}" required>
+              </div>
+              <div class="row">
+                <div class="col-md-6 mb-3">
+                  <label class="form-label">Password</label>
+                  <input type="password" name="password" class="form-control" minlength="8" required>
+                  <div class="form-text">Minimum 8 characters.</div>
+                </div>
+                <div class="col-md-6 mb-3">
+                  <label class="form-label">Confirm Password</label>
+                  <input type="password" name="confirm_password" class="form-control" minlength="8" required>
+                </div>
+              </div>
+              <button type="submit" class="btn btn-navy w-100 mt-2"><i class="fa-solid fa-user-plus"></i> Register</button>
+            </form>
+            <p class="text-center mt-3 mb-0">Already have an account? <a href="{{ url_for('login') }}">Login here</a></p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

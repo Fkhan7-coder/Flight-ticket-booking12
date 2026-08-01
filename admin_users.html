@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block title %}Manage Users | SkyBook Admin{% endblock %}
+{% block content %}
+<div class="container py-5">
+  <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4">
+    <h2 class="fw-bold mb-0"><i class="fa-solid fa-users gold-text"></i> Users</h2>
+    <div class="d-flex gap-2">
+      <form method="get" class="d-flex gap-2">
+        <input type="text" name="q" class="form-control" placeholder="Search name, username, email" value="{{ search }}">
+        <button class="btn btn-navy"><i class="fa-solid fa-magnifying-glass"></i></button>
+      </form>
+      <a href="{{ url_for('admin_dashboard') }}" class="btn btn-outline-navy"><i class="fa-solid fa-arrow-left"></i> Dashboard</a>
+    </div>
+  </div>
+
+  <div class="table-responsive">
+    <table class="table align-middle table-hover bg-white rounded shadow-sm">
+      <thead><tr><th>#</th><th>Username</th><th>Full Name</th><th>Email</th><th>Joined</th></tr></thead>
+      <tbody>
+      {% for u in users %}
+        <tr>
+          <td>{{ u.id }}</td>
+          <td class="font-monospace">{{ u.username }}</td>
+          <td>{{ u.fullname }}</td>
+          <td>{{ u.email }}</td>
+          <td>{{ u.created_at }}</td>
+        </tr>
+      {% else %}
+        <tr><td colspan="5" class="text-center text-muted">No users found.</td></tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

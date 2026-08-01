@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block title %}Page Not Found | SkyBook{% endblock %}
+{% block content %}
+<div class="container py-5 text-center">
+  <i class="fa-solid fa-plane-slash fa-4x gold-text mb-4"></i>
+  <h2 class="fw-bold">404 - Flight Not Found</h2>
+  <p class="text-muted">Looks like this page took an unscheduled detour.</p>
+  <a href="{{ url_for('index') }}" class="btn btn-navy"><i class="fa-solid fa-house"></i> Back to Home</a>
+</div>
+{% endblock %}

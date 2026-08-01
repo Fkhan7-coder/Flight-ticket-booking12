@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+{% block title %}Book Flight | SkyBook{% endblock %}
+{% block content %}
+<div class="container py-5">
+  <h2 class="fw-bold mb-4"><i class="fa-solid fa-magnifying-glass gold-text"></i> Available Flights</h2>
+
+  <form class="row g-3 mb-4 align-items-end search-card" method="get" style="margin-top:0;">
+    <div class="col-md-2">
+      <label class="form-label">From</label>
+      <input type="text" name="source" class="form-control" value="{{ search.source or '' }}">
+    </div>
+    <div class="col-md-2">
+      <label class="form-label">To</label>
+      <input type="text" name="destination" class="form-control" value="{{ search.destination or '' }}">
+    </div>
+    <div class="col-md-2">
+      <label class="form-label">Departure Date</label>
+      <input type="date" name="departure_date" class="form-control" value="{{ dep_date }}">
+    </div>
+    <div class="col-md-2">
+      <label class="form-label">Airline</label>
+      <select name="airline" class="form-select">
+        <option value="">All Airlines</option>
+        {% for a in airlines %}
+        <option value="{{ a.airline }}" {% if search.airline == a.airline %}selected{% endif %}>{{ a.airline }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="col-md-2">
+      <label class="form-label">Max Price (₹)</label>
+      <input type="number" name="max_price" class="form-control" value="{{ search.max_price or '' }}" placeholder="e.g. 6000">
+    </div>
+    <div class="col-md-2">
+      <button type="submit" class="btn btn-navy w-100"><i class="fa-solid fa-filter"></i> Filter</button>
+    </div>
+  </form>
+
+  <p class="text-muted">{{ flights|length }} flight(s) found</p>
+
+  <div class="row g-4">
+    {% for f in flights %}
+    <div class="col-12">
+      <div class="flight-card">
+        <div class="row align-items-center g-3">
+          <div class="col-md-2">
+            <span class="flight-badge">{{ f.flight_number }}</span>
+            <p class="fw-bold mt-2 mb-0">{{ f.airline }}</p>
+          </div>
+          <div class="col-md-5">
+            <div class="d-flex align-items-center gap-3">
+              <div class="text-center">
+                <p class="flight-time mb-0">{{ f.departure_time }}</p>
+                <p class="small text-muted mb-0">{{ f.source }}</p>
+              </div>
+              <i class="fa-solid fa-arrow-right-long text-muted"></i>
+              <div class="text-center">
+                <p class="flight-time mb-0">{{ f.arrival_time }}</p>
+                <p class="small text-muted mb-0">{{ f.destination }}</p>
+              </div>
+              <span class="small text-muted ms-2">({{ f.duration }})</span>
+            </div>
+          </div>
+          <div class="col-md-2">
+            <p class="small text-muted mb-0"><i class="fa-solid fa-chair"></i> {{ f.available_seats }} seats left</p>
+          </div>
+          <div class="col-md-2">
+            <p class="flight-price mb-0">₹{{ "%.0f"|format(f.price) }}</p>
+          </div>
+          <div class="col-md-1 text-md-end">
+            <a href="{{ url_for('booking', flight_id=f.id) }}" class="btn btn-gold w-100">Select</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% else %}
+    <div class="col-12">
+      <div class="alert alert-info">No flights match your search. Try different filters.</div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

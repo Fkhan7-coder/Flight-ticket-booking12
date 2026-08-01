@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+{% block title %}Book {{ flight.flight_number }} | SkyBook{% endblock %}
+{% block content %}
+<div class="container py-5">
+  <div class="row g-4">
+    <div class="col-lg-4">
+      <div class="flight-card">
+        <span class="flight-badge">{{ flight.flight_number }}</span>
+        <h5 class="fw-bold mt-2">{{ flight.airline }}</h5>
+        <div class="boarding-divider"></div>
+        <div class="d-flex justify-content-between">
+          <div>
+            <p class="ticket-label mb-0">From</p>
+            <p class="ticket-value">{{ flight.source }}</p>
+            <p class="small text-muted">{{ flight.departure_time }}</p>
+          </div>
+          <i class="fa-solid fa-plane mt-2 text-muted"></i>
+          <div class="text-end">
+            <p class="ticket-label mb-0">To</p>
+            <p class="ticket-value">{{ flight.destination }}</p>
+            <p class="small text-muted">{{ flight.arrival_time }}</p>
+          </div>
+        </div>
+        <div class="boarding-divider"></div>
+        <p class="mb-1"><i class="fa-regular fa-clock"></i> Duration: {{ flight.duration }}</p>
+        <p class="mb-1"><i class="fa-solid fa-chair"></i> Seats available: {{ flight.available_seats }}</p>
+        <h4 class="flight-price mt-3">₹{{ "%.0f"|format(flight.price) }} <span class="fs-6 text-muted">/ adult (Economy base)</span></h4>
+      </div>
+    </div>
+
+    <div class="col-lg-8">
+      <div class="search-card" style="margin-top:0;">
+        <h5 class="fw-bold mb-4"><i class="fa-solid fa-ticket gold-text"></i> Passenger & Booking Details</h5>
+        <form method="POST" class="needs-validation" novalidate>
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label class="form-label">Passenger Name</label>
+              <input type="text" name="passenger_name" class="form-control" value="{{ form.passenger_name or session.fullname or '' }}" required>
+            </div>
+            <div class="col-md-3">
+              <label class="form-label">Departure Date</label>
+              <input type="date" name="departure_date" class="form-control" value="{{ form.departure_date or '' }}" required>
+            </div>
+            <div class="col-md-3">
+              <label class="form-label">Return Date (Optional)</label>
+              <input type="date" name="return_date" class="form-control" value="{{ form.return_date or '' }}">
+            </div>
+
+            <div class="col-md-4">
+              <label class="form-label">Flight Class</label>
+              <select name="flight_class" class="form-select">
+                {% for c in ["Economy","Premium Economy","Business","First Class"] %}
+                <option value="{{ c }}" {% if form.flight_class == c %}selected{% endif %}>{{ c }}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <div class="col-md-2">
+              <label class="form-label">Adults</label>
+              <input type="number" name="adults" min="1" max="9" class="form-control" value="{{ form.adults or 1 }}" required>
+            </div>
+            <div class="col-md-2">
+              <label class="form-label">Children</label>
+              <input type="number" name="children" min="0" max="9" class="form-control" value="{{ form.children or 0 }}">
+            </div>
+            <div class="col-md-4">
+              <label class="form-label">Seat Preference</label>
+              <select name="seat_preference" class="form-select">
+                {% for s in ["Window","Middle","Aisle"] %}
+                <option value="{{ s }}" {% if form.seat_preference == s %}selected{% endif %}>{{ s }}</option>
+                {% endfor %}
+              </select>
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label">Payment Method</label>
+              <select name="payment_method" class="form-select">
+                {% for p in ["UPI","Debit Card","Credit Card","Net Banking"] %}
+                <option value="{{ p }}" {% if form.payment_method == p %}selected{% endif %}>{{ p }}</option>
+                {% endfor %}
+              </select>
+            </div>
+          </div>
+
+          <button type="submit" class="btn btn-gold w-100 mt-4 btn-lg">
+            <i class="fa-solid fa-lock"></i> Confirm & Pay Securely
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

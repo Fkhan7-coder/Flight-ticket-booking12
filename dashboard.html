@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+{% block title %}Dashboard | SkyBook{% endblock %}
+{% block content %}
+<div class="container py-5">
+  <h2 class="fw-bold">Welcome, <span class="gold-text">{{ session.fullname }}</span> <i class="fa-solid fa-hand-sparkles"></i></h2>
+  <p class="text-muted">Here's a quick look at your SkyBook account.</p>
+
+  <div class="row g-4 mt-2">
+    <div class="col-md-3 col-6">
+      <a href="{{ url_for('flights') }}" class="dash-tile text-center">
+        <i class="fa-solid fa-plane"></i>
+        <h6 class="fw-bold mt-2 mb-0">Book Flight</h6>
+      </a>
+    </div>
+    <div class="col-md-3 col-6">
+      <a href="{{ url_for('my_bookings') }}" class="dash-tile text-center">
+        <i class="fa-solid fa-ticket"></i>
+        <h6 class="fw-bold mt-2 mb-0">My Tickets</h6>
+      </a>
+    </div>
+    <div class="col-md-3 col-6">
+      <a href="{{ url_for('my_bookings') }}" class="dash-tile text-center">
+        <i class="fa-solid fa-download"></i>
+        <h6 class="fw-bold mt-2 mb-0">Download Ticket</h6>
+      </a>
+    </div>
+    <div class="col-md-3 col-6">
+      <a href="{{ url_for('profile') }}" class="dash-tile text-center">
+        <i class="fa-solid fa-user-pen"></i>
+        <h6 class="fw-bold mt-2 mb-0">Edit Profile</h6>
+      </a>
+    </div>
+  </div>
+
+  <div class="row g-4 mt-1">
+    <div class="col-md-4">
+      <div class="stat-card">
+        <p class="mb-1 text-white-50">Total Bookings</p>
+        <h3>{{ booking_count }}</h3>
+      </div>
+    </div>
+  </div>
+
+  <h5 class="fw-bold mt-5 mb-3">Recent Bookings</h5>
+  {% if recent %}
+  <div class="table-responsive">
+    <table class="table align-middle">
+      <thead><tr><th>Ticket ID</th><th>Flight</th><th>Route</th><th>Date</th><th>Status</th><th></th></tr></thead>
+      <tbody>
+      {% for b in recent %}
+        <tr>
+          <td class="font-monospace">{{ b.ticket_id }}</td>
+          <td>{{ b.airline }} ({{ b.flight_number }})</td>
+          <td>{{ b.source }} → {{ b.destination }}</td>
+          <td>{{ b.departure_date }}</td>
+          <td><span class="badge badge-status-confirmed">{{ b.status }}</span></td>
+          <td><a href="{{ url_for('ticket_view', ticket_id=b.ticket_id) }}" class="btn btn-sm btn-outline-navy">View</a></td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+  <p class="text-muted">You haven't booked any flights yet. <a href="{{ url_for('flights') }}">Book your first flight →</a></p>
+  {% endif %}
+</div>
+{% endblock %}

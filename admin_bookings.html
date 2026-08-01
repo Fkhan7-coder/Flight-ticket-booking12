@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %}Manage Bookings | SkyBook Admin{% endblock %}
+{% block content %}
+<div class="container py-5">
+  <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4">
+    <h2 class="fw-bold mb-0"><i class="fa-solid fa-ticket gold-text"></i> Bookings</h2>
+    <div class="d-flex gap-2">
+      <form method="get" class="d-flex gap-2">
+        <input type="text" name="q" class="form-control" placeholder="Search Ticket ID" value="{{ search }}">
+        <button class="btn btn-navy"><i class="fa-solid fa-magnifying-glass"></i></button>
+      </form>
+      <a href="{{ url_for('admin_dashboard') }}" class="btn btn-outline-navy"><i class="fa-solid fa-arrow-left"></i> Dashboard</a>
+    </div>
+  </div>
+
+  <div class="table-responsive">
+    <table class="table align-middle table-hover bg-white rounded shadow-sm">
+      <thead><tr><th>Ticket ID</th><th>User</th><th>Flight</th><th>Passenger</th><th>Date</th><th>Class</th><th>Amount</th><th>Status</th></tr></thead>
+      <tbody>
+      {% for b in bookings %}
+        <tr>
+          <td class="font-monospace">{{ b.ticket_id }}</td>
+          <td>{{ b.username }}</td>
+          <td>{{ b.airline }} ({{ b.flight_number }})</td>
+          <td>{{ b.passenger_name }}</td>
+          <td>{{ b.departure_date }}</td>
+          <td>{{ b.flight_class }}</td>
+          <td>₹{{ "%.0f"|format(b.amount) }}</td>
+          <td><span class="badge badge-status-confirmed">{{ b.status }}</span></td>
+        </tr>
+      {% else %}
+        <tr><td colspan="8" class="text-center text-muted">No bookings found.</td></tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

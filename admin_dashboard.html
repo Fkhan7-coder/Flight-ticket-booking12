@@ -1,0 +1,124 @@
+{% extends "base.html" %}
+{% block title %}Admin Dashboard | SkyBook{% endblock %}
+{% block content %}
+<div class="container py-5">
+  <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-4">
+    <h2 class="fw-bold mb-0"><i class="fa-solid fa-user-shield gold-text"></i> Admin Dashboard</h2>
+    <div class="d-flex gap-2">
+      <a href="{{ url_for('admin_users') }}" class="btn btn-outline-navy"><i class="fa-solid fa-users"></i> Users</a>
+      <a href="{{ url_for('admin_bookings') }}" class="btn btn-outline-navy"><i class="fa-solid fa-ticket"></i> Bookings</a>
+      <a href="{{ url_for('admin_logout') }}" class="btn btn-gold"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
+    </div>
+  </div>
+
+  <div class="row g-4 mb-5">
+    <div class="col-md-3 col-6">
+      <div class="stat-card"><p class="mb-1 text-white-50">Total Users</p><h3>{{ total_users }}</h3></div>
+    </div>
+    <div class="col-md-3 col-6">
+      <div class="stat-card"><p class="mb-1 text-white-50">Total Flights</p><h3>{{ total_flights }}</h3></div>
+    </div>
+    <div class="col-md-3 col-6">
+      <div class="stat-card"><p class="mb-1 text-white-50">Total Bookings</p><h3>{{ total_bookings }}</h3></div>
+    </div>
+    <div class="col-md-3 col-6">
+      <div class="stat-card"><p class="mb-1 text-white-50">Revenue</p><h3>₹{{ "%.0f"|format(revenue) }}</h3></div>
+    </div>
+  </div>
+
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h4 class="fw-bold mb-0">Manage Flights</h4>
+    <button class="btn btn-gold" data-bs-toggle="modal" data-bs-target="#addFlightModal">
+      <i class="fa-solid fa-plus"></i> Add Flight
+    </button>
+  </div>
+
+  <div class="table-responsive">
+    <table class="table align-middle table-hover bg-white rounded shadow-sm">
+      <thead>
+        <tr>
+          <th>Flight #</th><th>Airline</th><th>Route</th><th>Departure</th><th>Arrival</th>
+          <th>Duration</th><th>Price</th><th>Seats</th><th></th>
+        </tr>
+      </thead>
+      <tbody>
+      {% for f in flights %}
+        <tr>
+          <td class="font-monospace">{{ f.flight_number }}</td>
+          <td>{{ f.airline }}</td>
+          <td>{{ f.source }} → {{ f.destination }}</td>
+          <td>{{ f.departure_time }}</td>
+          <td>{{ f.arrival_time }}</td>
+          <td>{{ f.duration }}</td>
+          <td>₹{{ "%.0f"|format(f.price) }}</td>
+          <td>{{ f.available_seats }}</td>
+          <td class="text-nowrap">
+            <button class="btn btn-sm btn-outline-navy" data-bs-toggle="modal" data-bs-target="#editFlightModal{{ f.id }}"><i class="fa-solid fa-pen"></i></button>
+            <form action="{{ url_for('admin_delete_flight', flight_id=f.id) }}" method="POST" class="d-inline" onsubmit="return confirm('Delete this flight?');">
+              <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+              <button class="btn btn-sm btn-outline-danger"><i class="fa-solid fa-trash"></i></button>
+            </form>
+          </td>
+        </tr>
+
+        <!-- Edit Modal -->
+        <div class="modal fade" id="editFlightModal{{ f.id }}" tabindex="-1">
+          <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+              <form action="{{ url_for('admin_edit_flight', flight_id=f.id) }}" method="POST">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                <div class="modal-header"><h5 class="modal-title">Edit Flight {{ f.flight_number }}</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body row g-3">
+                  <div class="col-md-4"><label class="form-label">Flight Number</label><input class="form-control" name="flight_number" value="{{ f.flight_number }}" required></div>
+                  <div class="col-md-4"><label class="form-label">Airline</label><input class="form-control" name="airline" value="{{ f.airline }}" required></div>
+                  <div class="col-md-4"><label class="form-label">Price</label><input type="number" step="0.01" class="form-control" name="price" value="{{ f.price }}" required></div>
+                  <div class="col-md-4"><label class="form-label">From</label><input class="form-control" name="source" value="{{ f.source }}" required></div>
+                  <div class="col-md-4"><label class="form-label">To</label><input class="form-control" name="destination" value="{{ f.destination }}" required></div>
+                  <div class="col-md-4"><label class="form-label">Seats</label><input type="number" class="form-control" name="available_seats" value="{{ f.available_seats }}" required></div>
+                  <div class="col-md-4"><label class="form-label">Departure Time</label><input class="form-control" name="departure_time" value="{{ f.departure_time }}" required></div>
+                  <div class="col-md-4"><label class="form-label">Arrival Time</label><input class="form-control" name="arrival_time" value="{{ f.arrival_time }}" required></div>
+                  <div class="col-md-4"><label class="form-label">Duration</label><input class="form-control" name="duration" value="{{ f.duration }}" required></div>
+                </div>
+                <div class="modal-footer">
+                  <button type="submit" class="btn btn-navy">Save Changes</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Add Flight Modal -->
+<div class="modal fade" id="addFlightModal" tabindex="-1">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <form action="{{ url_for('admin_add_flight') }}" method="POST">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+        <div class="modal-header"><h5 class="modal-title">Add New Flight</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body row g-3">
+          <div class="col-md-4"><label class="form-label">Flight Number</label><input class="form-control" name="flight_number" required></div>
+          <div class="col-md-4"><label class="form-label">Airline</label><input class="form-control" name="airline" required></div>
+          <div class="col-md-4"><label class="form-label">Price</label><input type="number" step="0.01" class="form-control" name="price" required></div>
+          <div class="col-md-4"><label class="form-label">From</label><input class="form-control" name="source" required></div>
+          <div class="col-md-4"><label class="form-label">To</label><input class="form-control" name="destination" required></div>
+          <div class="col-md-4"><label class="form-label">Seats</label><input type="number" class="form-control" name="available_seats" value="60" required></div>
+          <div class="col-md-4"><label class="form-label">Departure Time</label><input class="form-control" name="departure_time" placeholder="HH:MM" required></div>
+          <div class="col-md-4"><label class="form-label">Arrival Time</label><input class="form-control" name="arrival_time" placeholder="HH:MM" required></div>
+          <div class="col-md-4"><label class="form-label">Duration</label><input class="form-control" name="duration" placeholder="2h 10m" required></div>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-gold">Add Flight</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

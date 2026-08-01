@@ -1,0 +1,122 @@
+{% extends "base.html" %}
+{% block title %}SkyBook | Fly Beyond Limits{% endblock %}
+
+{% block content %}
+<section class="hero">
+  <i class="fa-solid fa-plane plane-trail"></i>
+  <div class="container position-relative">
+    <div class="row align-items-center">
+      <div class="col-lg-7">
+        <p class="eyebrow">Boarding now &mdash; 22 routes, 6 airlines</p>
+        <h1>Fly beyond limits.<br>Book your <span class="gold-text">next journey</span> in minutes.</h1>
+        <p class="lead mt-3">Compare fares, pick your seat, and get a boarding pass instantly — SkyBook makes flying simple, secure, and a little bit magical.</p>
+        <div class="mt-4 d-flex gap-3">
+          <a href="{{ url_for('flights') }}" class="btn btn-gold btn-lg"><i class="fa-solid fa-magnifying-glass"></i> Search Flights</a>
+          <a href="#destinations" class="btn btn-outline-light btn-lg">Explore Destinations</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="container">
+  <div class="search-card">
+    <h5 class="fw-bold mb-3"><i class="fa-solid fa-plane-departure gold-text"></i> Search Flights</h5>
+    <form class="row g-3" action="{{ url_for('flights') }}" method="get">
+      <div class="col-md-3">
+        <label class="form-label">From</label>
+        <input type="text" name="source" class="form-control" placeholder="e.g. Mumbai">
+      </div>
+      <div class="col-md-3">
+        <label class="form-label">To</label>
+        <input type="text" name="destination" class="form-control" placeholder="e.g. Delhi">
+      </div>
+      <div class="col-md-3">
+        <label class="form-label">Departure Date</label>
+        <input type="date" name="departure_date" class="form-control">
+      </div>
+      <div class="col-md-3 d-flex align-items-end">
+        <button type="submit" class="btn btn-navy w-100"><i class="fa-solid fa-magnifying-glass"></i> Search</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<section class="container py-5" id="destinations">
+  <div class="text-center mb-5">
+    <h2 class="section-title">Popular Destinations</h2>
+    <p class="section-sub">Handpicked routes our travellers love the most, at the best fares available today.</p>
+  </div>
+  <div class="row g-4">
+    {% set imgs = {
+      'Delhi':'https://images.unsplash.com/photo-1587474260584-136574528ed5?q=80&w=800',
+      'Goa':'https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?q=80&w=800',
+      'Bengaluru':'https://images.unsplash.com/photo-1596176530529-78163a4f7af2?q=80&w=800',
+      'Mumbai':'https://images.unsplash.com/photo-1529253355930-ddbe423a2ac7?q=80&w=800',
+      'Chennai':'https://images.unsplash.com/photo-1582510003544-4d00b7f74220?q=80&w=800',
+      'Kolkata':'https://images.unsplash.com/photo-1558431382-27e303142255?q=80&w=800',
+      'Hyderabad':'https://images.unsplash.com/photo-1600100397608-f75f4942bf3c?q=80&w=800',
+      'Dubai':'https://images.unsplash.com/photo-1512453979798-5ea266f8880c?q=80&w=800',
+      'Singapore':'https://images.unsplash.com/photo-1525625293386-3f8f99389edd?q=80&w=800',
+    } %}
+    {% for d in destinations %}
+    <div class="col-md-4">
+      <a href="{{ url_for('flights', destination=d.city) }}" class="text-decoration-none">
+        <div class="dest-card">
+          <img src="{{ imgs.get(d.city, 'https://images.unsplash.com/photo-1436491865332-7a61a109cc05?q=80&w=800') }}" alt="{{ d.city }}">
+          <div class="dest-overlay">
+            <h5>{{ d.city }}</h5>
+            <span class="price">Fares from ₹{{ "%.0f"|format(d.price) }}</span>
+          </div>
+        </div>
+      </a>
+    </div>
+    {% endfor %}
+  </div>
+</section>
+
+<section class="py-5" style="background:var(--cloud-dim);">
+  <div class="container py-4">
+    <div class="text-center mb-5">
+      <h2 class="section-title">Why Fly With SkyBook</h2>
+      <p class="section-sub">A booking experience designed around trust, speed, and comfort.</p>
+    </div>
+    <div class="row g-4">
+      <div class="col-md-3 col-6">
+        <div class="feature-card">
+          <div class="feature-icon"><i class="fa-solid fa-shield-halved"></i></div>
+          <h6 class="fw-bold">Secure Payments</h6>
+          <p class="text-muted small mb-0">Encrypted checkout with UPI, cards & net banking.</p>
+        </div>
+      </div>
+      <div class="col-md-3 col-6">
+        <div class="feature-card">
+          <div class="feature-icon"><i class="fa-solid fa-bolt"></i></div>
+          <h6 class="fw-bold">Instant Tickets</h6>
+          <p class="text-muted small mb-0">Get your QR-verified boarding pass in seconds.</p>
+        </div>
+      </div>
+      <div class="col-md-3 col-6">
+        <div class="feature-card">
+          <div class="feature-icon"><i class="fa-solid fa-tags"></i></div>
+          <h6 class="fw-bold">Best Fares</h6>
+          <p class="text-muted small mb-0">Transparent pricing across every flight class.</p>
+        </div>
+      </div>
+      <div class="col-md-3 col-6">
+        <div class="feature-card">
+          <div class="feature-icon"><i class="fa-solid fa-headset"></i></div>
+          <h6 class="fw-bold">24/7 Support</h6>
+          <p class="text-muted small mb-0">Real help, any time zone, any time of day.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="container py-5 text-center">
+  <h2 class="section-title mb-3">Ready for takeoff?</h2>
+  <p class="section-sub mx-auto mb-4">Create your free account and book your first flight in under two minutes.</p>
+  <a href="{{ url_for('register') }}" class="btn btn-gold btn-lg"><i class="fa-solid fa-user-plus"></i> Get Started</a>
+</section>
+{% endblock %}
